@@ -1,18 +1,22 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#define print(text) if (GEngine) GEngine->AddOnScreenDebugMessage(-1,3,FColor::Green,text);
+#define print(text) \
+	if (GEngine)    \
+		GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Green, text);
 
 #include "MyPlayerController.h"
 #include "Blueprint/UserWidget.h"
 #include "Runtime/Engine/Classes/Engine/Engine.h"
 #include "ConstructorHelpers.h"
+#include <Runtime\Engine\Classes\Engine\Selection.h>
+#include <Array.h>
 
- AMyPlayerController::AMyPlayerController()
+AMyPlayerController::AMyPlayerController()
 {
-	 Words.Add("DADA");
-	 Words.Add("MAKARENA");
-	 Words.Add("MAMA");
-	 lost = 0;
+	Words.Add(TEXT("DADA"));
+	Words.Add(TEXT("MAKARENA"));
+	Words.Add(TEXT("MAMA"));
+	lost = 0;
 }
 
 void AMyPlayerController::BeginPlay()
@@ -26,7 +30,14 @@ void AMyPlayerController::BeginPlay()
 			MyWidget->AddToViewport();
 		}
 	}
+	if (WinWidget)
+		{
+			WonWidget = CreateWidget<UUserWidget>(this, WinWidget);
+		}
 	APlayerController::bShowMouseCursor = true;
+}
+void AMyPlayerController::Tick()
+{
 }
 void AMyPlayerController::CheckLetter(FString let)
 {
@@ -44,13 +55,14 @@ void AMyPlayerController::CheckLetter(FString let)
 	if (found == false)
 	{
 		lost++;
-		if (lost >= 3) print("YOU LOOSE");
+		if (lost >= 3)
+			print("YOU LOOSE");
 	}
 	CheckWin();
 }
 void AMyPlayerController::ChooseWord()
 {
-	int RandomNummer = FMath::RandRange(0, Words.Num()-1);
+	int RandomNummer = FMath::RandRange(0, Words.Num() - 1);
 	print(Words[RandomNummer]);
 	if (RandomNummer >= 0)
 	{
@@ -72,5 +84,10 @@ void AMyPlayerController::CheckWin()
 			win++;
 		}
 	}
-	if (win == WordView.Len()) print("YOU WIN");
+	if (win == WordView.Len())
+	{
+		MyWidget->RemoveFromViewport();
+		WonWidget->AddToViewport();
+		APlayerController::bShowMouseCursor = true;
+	}
 }

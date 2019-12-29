@@ -6,25 +6,29 @@
 #include "GameFramework/PlayerController.h"
 #include "MyPlayerController.generated.h"
 
-/**
- * 
- */
+
 UCLASS()
 class HANGMAN_API AMyPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 	AMyPlayerController();
+private:
+	bool won = false;
 public:
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<UUserWidget> MainWidget;
-	UUserWidget* MyWidget;
 	UPROPERTY(EditAnywhere)
-	USceneComponent* Skeleton;
+		TSubclassOf<UUserWidget> WinWidget;
+	UUserWidget* MyWidget;
+	UUserWidget* WonWidget;
+	UPROPERTY(EditAnywhere) 
+		TSubclassOf<AActor> Skeleton; // skeleton reference
 	UPROPERTY(EditAnywhere, Category = "Words")
 		TArray<FString> Words;
 		FString Word;
+
 	
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	int lost;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Words")
 		FString WordView; 
@@ -34,4 +38,5 @@ public:
 	void CheckWin();
 protected:
 	virtual void BeginPlay() override;
+	virtual void Tick() ;
 };
