@@ -13,15 +13,33 @@
 
 AMyPlayerController::AMyPlayerController()
 {
-	Words.Add(TEXT("DADA"));
-	Words.Add(TEXT("MAKARENA"));
-	Words.Add(TEXT("MAMA"));
-	lost = 0;
+	
+	Words.Add(TEXT("ADAM"));
+	Words.Add(TEXT("BARTEK"));
+	Words.Add(TEXT("CEZARY"));
+	Words.Add(TEXT("DAMIAN"));
+	Words.Add(TEXT("ERYK"));
+	Words.Add(TEXT("FABIAN"));
+	Words.Add(TEXT("HUBERT"));
+	Words.Add(TEXT("IGNACY"));
+	Words.Add(TEXT("JACEK"));
+	Words.Add(TEXT("KAMIL"));
+	Words.Add(TEXT("LEON"));
+	Words.Add(TEXT("MARIUSZ"));
+	Words.Add(TEXT("NORBERT"));
+	Words.Add(TEXT("OLGIERT"));
+	Words.Add(TEXT("PATRYK"));
+	Words.Add(TEXT("ROBERT"));
+	Words.Add(TEXT("SEBASTIAN"));
+	Words.Add(TEXT("TOMEK"));
+	Words.Add(TEXT("ZENEK"));
+	lost = 5;
 }
 
 void AMyPlayerController::BeginPlay()
 {
 	ChooseWord();
+	APlayerController::bShowMouseCursor = true;
 	if (MainWidget)
 	{
 		MyWidget = CreateWidget<UUserWidget>(this, MainWidget);
@@ -31,14 +49,15 @@ void AMyPlayerController::BeginPlay()
 		}
 	}
 	if (WinWidget)
-		{
-			WonWidget = CreateWidget<UUserWidget>(this, WinWidget);
-		}
-	APlayerController::bShowMouseCursor = true;
+	{
+		WonWidget = CreateWidget<UUserWidget>(this, WinWidget);
+	}
+	if (GameOverWidget)
+	{
+		OverWidget = CreateWidget<UUserWidget>(this, GameOverWidget);
+	}
 }
-void AMyPlayerController::Tick()
-{
-}
+
 void AMyPlayerController::CheckLetter(FString let)
 {
 	bool found = false;
@@ -54,9 +73,7 @@ void AMyPlayerController::CheckLetter(FString let)
 	}
 	if (found == false)
 	{
-		lost++;
-		if (lost >= 3)
-			print("YOU LOOSE");
+		CheckGameOver();
 	}
 	CheckWin();
 }
@@ -89,5 +106,14 @@ void AMyPlayerController::CheckWin()
 		MyWidget->RemoveFromViewport();
 		WonWidget->AddToViewport();
 		APlayerController::bShowMouseCursor = true;
+	}
+}
+void AMyPlayerController::CheckGameOver()
+{
+	lost--;
+	if (lost == 0)
+	{
+		MyWidget->RemoveFromViewport();
+		OverWidget->AddToViewport();
 	}
 }
